@@ -1,34 +1,60 @@
 
-import  Counter from './counter' ;
+import Counter from './counter';
 import Batsman from './batman';
-import './App.css'
+import Users from './users';
+import Friends from './Friends'
+import './App.css';
+import { Suspense } from 'react';
+
+
+const fetchUsers = fetch('https://jsonplaceholder.typicode.com/users')
+  .then(res => res.json()) ;
+
+  const fetchFriends = async()=>{
+    const res = await fetch('https://jsonplaceholder.typicode.com/users') ;
+    return res.json() ;
+  }
+
 
 function App() {
 
-  function handleClick(){
+  const friendsPromise = fetchFriends()
+
+  function handleClick() {
     alert('I am clicked')
   }
 
-  const handleClick2 = ()=>{
+  const handleClick2 = () => {
     alert('clicked two')
   }
 
   // with parameter ;
-  const handleAdd5 = (num)=>{
-    const newNum = num +5 ;
+  const handleAdd5 = (num) => {
+    const newNum = num + 5;
     alert(newNum)
   }
 
   return (
     <>
-    <h3>Vite + react</h3>
+      <h3>Vite + react</h3>
 
-    <Counter></Counter>
-    <Batsman></Batsman>
+      <Suspense fallback={<h3>Loading...</h3>}>
+        <Users fetchUsers={fetchUsers}></Users>
 
-    <button onClick={handleClick}>Click Me</button>
-    <button onClick={handleClick2}>Click Me</button>
-    <button onClick={()=>handleAdd5(10)}>Click 5</button>
+      </Suspense>
+
+      <Suspense fallback={<h3>Friends are coming for teat...</h3>}>
+
+      <Friends  friendsPromise={ friendsPromise}></Friends>
+       
+
+      </Suspense>
+      <Counter></Counter>
+      <Batsman></Batsman>
+
+      <button onClick={handleClick}>Click Me</button>
+      <button onClick={handleClick2}>Click Me</button>
+      <button onClick={() => handleAdd5(10)}>Click 5</button>
     </>
   )
 }
